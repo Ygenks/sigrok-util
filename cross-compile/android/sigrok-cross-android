@@ -31,7 +31,7 @@ ANDROID_NDK=$ANDROID_PATH/android-ndk-r10e
 ANDROID_SDK=$ANDROID_PATH/android-sdk-linux
 
 # The path where your Android toolchain directory is located.
-TOOLCHAIN=$ANDROID_NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86
+TOOLCHAIN=$ANDROID_NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64
 # TOOLCHAIN=$ANDROID_NDK/toolchains/x86-4.9/prebuilt/linux-x86
 
 # Select which Android toolchain to use.
@@ -46,10 +46,10 @@ PREFIX=$HOME/sr_android
 BUILDDIR=./build
 
 # Edit this to control verbose build output.
-# V="V=1 VERBOSE=1"
+V="V=1 VERBOSE=1"
 
 # Edit this to enable/disable/modify parallel compiles.
-PARALLEL="-j 2"
+PARALLEL="-j 5"
 
 # You usually don't need to change anything below this line.
 
@@ -69,7 +69,7 @@ VER_LIBSIGCXX_SHORT=2.9
 VER_LIBZIP=1.1
 VER_LIBFTDI1=1.2
 VER_LIBUSB=1.0.19
-VER_PYTHON=3.3.3
+VER_PYTHON=3.9.9
 VER_BOOST=1.58.0
 VER_QT=5.6.0
 VER_QT_SHORT=5.6
@@ -100,9 +100,9 @@ if [ "x$1" = "xprepare" ]; then
   cd $ANDROID_PATH
 
   # NDK
-  $WGET http://dl.google.com/android/ndk/android-ndk-r$VER_NDK-linux-x86.bin
-  chmod 700 android-ndk-r$VER_NDK-linux-x86.bin
-  ./android-ndk-r$VER_NDK-linux-x86.bin -y
+  # $WGET http://dl.google.com/android/ndk/android-ndk-r$VER_NDK-linux-x86.bin
+  # chmod 700 android-ndk-r$VER_NDK-linux-x86.bin
+  # ./android-ndk-r$VER_NDK-linux-x86.bin -y
   cd android-ndk-r$VER_NDK
   ./build/tools/make-standalone-toolchain.sh --platform=android-$VER_AND_API \
     --toolchain=arm-linux-androideabi-4.9 \
@@ -201,7 +201,7 @@ fi
 # -----------------------------------------------------------------------------
 
 # Get the latest versions of config.guess/config.sub that know about Android.
-$GIT_CLONE http://git.savannah.gnu.org/r/config.git
+git clone http://git.savannah.gnu.org/r/config.git
 
 # Get a toolchain for cmake that knows about Android.
 $WGET https://raw.githubusercontent.com/arithran/android-cmake/master/toolchain/android.toolchain.cmake
@@ -214,8 +214,13 @@ patch < ../android.toolchain.cmake.patch android.toolchain.cmake
 cd Python-$VER_PYTHON
 make distclean $V
 autoreconf
-patch -p1 < ../../Python-$VER_PYTHON.patch
-ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_func_pipe2=no ac_cv_func_fdatasync=no ac_cv_func_killpg=no ac_cv_func_waitid=no ac_cv_func_sigaltstack=no ./configure $C --build=x86_64-linux-gnu --disable-ipv6
+# patch -p1 < ../../Python-$VER_PYTHON.patch
+# CXX="$CXX -D __ANRDOID_API__=${VER_AND_API}"
+# CC="$CC -D __ANRDOID_API__=${VER_AND_API}"
+# CFLAGS="$CFLAGS -D __ANRDOID_API__=${VER_AND_API}"
+# CPP="$CPP -D __ANRDOID_API__=${VER_AND_API}"
+# CPPFLAGS="$CPPFLAGS -D __ANRDOID_API__=${VER_AND_API}"
+CXX="$CXX -D __ANRDOID_API__=${VER_AND_API}" CC="$CC -D __ANRDOID_API__=${VER_AND_API}" ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_func_pipe2=no ac_cv_func_fdatasync=no ac_cv_func_killpg=no ac_cv_func_waitid=no ac_cv_func_sigaltstack=no ./configure $C --build=x86_64-linux-gnu --disable-ipv6
 sed -i "s/^#zlib/zlib/g" Modules/Setup
 sed -i "s/^#math/math/g" Modules/Setup
 sed -i "s/^#time/time/g" Modules/Setup
