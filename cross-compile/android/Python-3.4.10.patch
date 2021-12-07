@@ -177,6 +177,17 @@ index 832df53..c43e5e9 100644
  #ifdef HAVE_WCSCOLL
    {"strcoll", (PyCFunction) PyLocale_strcoll,
     METH_VARARGS, strcoll__doc__},
+--- a/Modules/pwdmodule.c 2013-12-05 14:41:59.065464798 +0000
++++ b/Modules/pwdmodule.c	2013-12-05 14:42:17.045681049 +0000
+@@ -74,3 +74,7 @@
+     PyStructSequence_SET_ITEM(v, setIndex++, _PyLong_FromUid(p->pw_uid));
+     PyStructSequence_SET_ITEM(v, setIndex++, _PyLong_FromGid(p->pw_gid));
+-    SETS(setIndex++, p->pw_gecos);
++#if defined(__VMS) || defined(__ANDROID__)
++     SETS(setIndex++, "");
++#else
++     SETS(setIndex++, p->pw_gecos);
++#endif
 --- a/Python/bltinmodule.c 2014-04-13 10:14:13.053260705 +0200
 +++ b/Python/bltinmodule.c	2014-04-26 15:18:24.094444817 +0200
 @@ -24,7 +24,7 @@
