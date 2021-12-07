@@ -69,7 +69,7 @@ VER_LIBSIGCXX_SHORT=2.9
 VER_LIBZIP=1.1
 VER_LIBFTDI1=1.2
 VER_LIBUSB=1.0.19
-VER_PYTHON=3.9.9
+VER_PYTHON=3.4.10
 VER_BOOST=1.58.0
 VER_QT=5.6.0
 VER_QT_SHORT=5.6
@@ -214,7 +214,7 @@ patch < ../android.toolchain.cmake.patch android.toolchain.cmake
 cd Python-$VER_PYTHON
 make distclean $V
 autoreconf
-# patch -p1 < ../../Python-$VER_PYTHON.patch
+patch -p1 < ../../Python-$VER_PYTHON.patch
 # CXX="$CXX -D __ANRDOID_API__=${VER_AND_API}"
 # CC="$CC -D __ANRDOID_API__=${VER_AND_API}"
 # CFLAGS="$CFLAGS -D __ANRDOID_API__=${VER_AND_API}"
