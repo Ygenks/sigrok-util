@@ -278,7 +278,7 @@ make install $V
 cd ..
 
 # pcre (needed for glib)
-$WGET https://ftp.pcre.org/pub/pcre/pcre-$VER_PCRE.tar.gz
+$WGET https://sourceforge.net/projects/pcre/files/pcre/$VER_PCRE/pcre-$VER_PCRE.tar.gz/download -O pcre-$VER_PCRE.tar.gz
 tar xfz pcre-$VER_PCRE.tar.gz
 cd pcre-$VER_PCRE
 ./configure $C --disable-cpp --enable-utf --enable-unicode-properties
@@ -331,7 +331,7 @@ cd ..
 $WGET http://www.intra2net.com/en/developer/libftdi/download/libftdi1-$VER_LIBFTDI1.tar.bz2
 tar xfj libftdi1-$VER_LIBFTDI1.tar.bz2
 cd libftdi1-$VER_LIBFTDI1
-cmake $CM -DFTDIPP=no -DDOCUMENTATION=no -DEXAMPLES=no -DFTDI_EEPROM=no -DPYTHON_BINDINGS=no -DBUILD_TESTS=n .
+cmake $CM -DANDROID_NDK_HOST_SYSTEM_NAME=linux_x64 -DFTDIPP=no -DDOCUMENTATION=no -DEXAMPLES=no -DFTDI_EEPROM=no -DPYTHON_BINDINGS=no -DBUILD_TESTS=n .
 make $PARALLEL $V
 make install $V
 cd ..
@@ -441,7 +441,7 @@ if [ ! -e "${ANDROID_SDK}/tools/android" ]; then
   exit 0
 fi
 
-NDK_HOST=`"$ANDROID_NDK/ndk-build" -p 2>/dev/null | awk '$1 == "HOST_TAG" { print $3 }'`
+NDK_HOST=`"$ANDROID_NDK/ndk-build" -p 2>/dev/null | awk '$1 == "HOST_TAG64" { print $3 }'`
 
 # Boost (needed for PulseView)
 $WGET http://$SF_MIRROR/project/boost/boost/$VER_BOOST/boost_${VER_BOOST//./_}.tar.bz2
@@ -502,7 +502,7 @@ $GIT_CLONE $REPO_BASE/pulseview
 cd pulseview
 patch -p1 < ../../pv_cmake_pkgconfig_fix.patch
 sed -i -e "s,\t\tandroid:versionName=.*$,\t\tandroid:versionName=\"`date -Iseconds`\"," android/AndroidManifest.xml
-cmake $CM -DENABLE_TESTS=y .
+cmake $CM -DANDROID_NDK_HOST_SYSTEM_NAME=linux_x64 -DENABLE_TESTS=y .
 make $PARALLEL $V
 ${TOOLCHAIN_TRIPLET}-strip -S libs/$TARGET_ARCH/libpulseview.so
 cd android
