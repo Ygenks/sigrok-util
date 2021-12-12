@@ -137,6 +137,12 @@ $WGET http://python.org/ftp/python/$VER_PYTHON/Python-$VER_PYTHON.tar.xz
 tar xfJ Python-$VER_PYTHON.tar.xz
 cd Python-$VER_PYTHON
 ac_cv_func_clock_gettime=yes ./configure
+sed -i "s/^#zlib/zlib/g" Modules/Setup
+sed -i "s/^#math/math/g" Modules/Setup
+sed -i "s/^#time/time/g" Modules/Setup
+sed -i "s/^#_struct/_struct/g" Modules/Setup
+sed -i "s/^#_sha512/_sha512/g" Modules/Setup
+sed -i "s/^#_random/_random/g" Modules/Setup
 make python $V
 mv python hostpython
 cd ..
@@ -225,6 +231,8 @@ sed -i "s/^#zlib/zlib/g" Modules/Setup
 sed -i "s/^#math/math/g" Modules/Setup
 sed -i "s/^#time/time/g" Modules/Setup
 sed -i "s/^#_struct/_struct/g" Modules/Setup
+sed -i "s/^#_sha512/_sha512/g" Modules/Setup
+sed -i "s/^#_random/_random/g" Modules/Setup
 make PYTHON_FOR_BUILD='_PYTHON_HOST_PLATFORM=$(_PYTHON_HOST_PLATFORM) ./hostpython' install $V
 cd ..
 
